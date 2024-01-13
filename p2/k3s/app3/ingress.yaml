@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app-two-ingress
+  name: app-three-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: app2.com
+    - host: app3.com
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: app-two-svc
+                name: app-three-svc
                 port:
                   number: 80
