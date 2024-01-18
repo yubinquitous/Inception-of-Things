@@ -14,12 +14,11 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 sudo chmod 666 /var/run/docker.sock
 #sudo usermod -aG docker $USER
 
-
 # k3d install
 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 
 # k3d cluster  create
-k3d cluster create joowparkNode --agents 3 --wait
+k3d cluster create joowparkNode --agents 1 -p "8081:80@loadbalancer" --wait
 
 #kubectl install
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -50,19 +49,8 @@ echo "kubectl port-forward --address=0.0.0.0 svc/argocd-server -n argocd 8080:44
 rm get_helm.sh
 rm kubectl.sha256 
 
-
 echo "export KUBECONFIG=$(k3d kubeconfig write joowparkNode)" >> /home/vagrant/.bashrc
 source /home/vagrant/.bashrc
 
-kubectl apply -f /vagrant
+kubectl apply -f ../argoCD
 kubectl wait --for=condition=Ready pods --all -n dev
-
-
-# k3s init
-#sudo apt-get install cgroup-bin
-#sudo ufw disable
-#export INSTALL_K3S_EXEC="--write-kubeconfig-mode=644 --tls-san $(hostname) --node-ip 192.168.56.110 --bind-address 192.168.56.110  --advertise-address 192.168.56.110"
-#curl -sfL https://get.k3s.io | sh -
-#sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-#cp /etc/rancher/k3s/k3s.yaml /vagrant
-#cp /var/lib/rancher/k3s/server/node-token /vagrant/

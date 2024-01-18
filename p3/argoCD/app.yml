@@ -6,11 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/ghonman2/docker-inception-of-thing.git
+    repoURL: https://github.com/ghonman2/yubchoi-inception.git
     targetRevision: main
     path: devops
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
   syncPolicy:
-    automated: {}
+    automated: 
+      selfHeal: true
