@@ -1,18 +1,19 @@
 apiVersion: networking.k8s.io/v1
-kind: Ingress   #ingress = loadbanlancer + nginx
+kind: Ingress #ingress = loadbanlancer + nginx
 metadata:
   name: app-one-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: / # 뒤에 있는 uri를 어떻게 보낼 것인가에 대한 이야기임.
-spec:
-  rules:
-    - host: app1.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: app-one-svc
-                port:
+  annotations: # Ingress에 대한 추가 설정
+    nginx.ingress.kubernetes.io/rewrite-target: / # Ingress가 받은 요청을 재작성. /로 시작하는 요청을 app-one-svc로 전달
+spec: # Ingress의 구성 정의
+  # ingressClassName: nginx # Ingress Controller의 이름
+  rules: # Ingress의 라우팅 규칙 정의
+    - host: app1.com # 요청이 전달될 호스트
+      http: # HTTP 요청에 대한 라우팅 규칙 정의
+        paths: # HTTP 요청의 경로에 따른 라우팅 규칙 정의
+          - path: / # 요청 경로가 /인 경우
+            pathType: Prefix # 요청 경로가 /로 시작하는 경우
+            backend: # 요청이 전달될 백엔드 서비스 정의
+              service: # 요청이 전달될 서비스
+                name: app-one-svc # 요청이 전달될 서비스의 이름
+                port: # 요청이 전달될 서비스의 포트
                   number: 80

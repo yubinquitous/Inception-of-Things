@@ -1,39 +1,38 @@
-apiVersion: apps/v1 #HTTP api 통신의 버전 ? 
-kind: Deployment 
+apiVersion: apps/v1 # 사용할 Kubernetes API의 버전 지정
+kind: Deployment # resource의 종류: Deployment
 metadata:
-  name: app-one  # Deploy의 이름임.
-  labels:        # Deploy app-one의 라벨인 app:app-one임
-    app: app-one
-spec:
-  replicas: 1   # deploy에서 관리하는 pod 의갯수
-  selector:     # label을 통해서 pod를 관리함. 
-    matchLabels:
-      app: app-one  
-  template:     # pod에 관한 이야기임/
+  name: app-one # Deployment의 이름
+  labels:
+    app: app-one # Deployment의 라벨: "app: app-one"
+spec: # Deployment의 구성을 정의
+  replicas: 1 # 배포할 pod의 개수
+  selector: # pod를 선택하기 위한 조건 정의
+    matchLabels: # pod의 라벨이 "app: app-one"인 것을 선택
+      app: app-one
+  template: # pod의 템플릿을 정의
     metadata:
-      labels:   # pod의 라벨 관련 label
+      labels: # pod의 라벨 정의
         app: app-one
-    spec:
-      containers:
-      - name: app-one
-        image: paulbouwer/hello-kubernetes:1
-        ports:
-          - name: app-one-port
-            containerPort: 8080
-        env:
-          - name : MESSAGE
-            value : "Hello from app1"
+    spec: # pod의 구성을 정의
+      containers: # pod 내에서 실행될 컨테이너를 정의
+        - name: app-one # 컨테이너 이름
+          image: paulbouwer/hello-kubernetes:1 # 컨테이너에서 사용할 이미지
+          ports: # 컨테이너에서 오픈할 포트 정의
+            - name: app-one-port
+              containerPort: 8080
+          env: # 컨테이너에 전달할 환경 변수 정의
+            - name: MESSAGE
+              value: "Hello from app1"
 ---
-
-apiVersion: v1  
-kind: Service # 네트워크 관련 이야기임.
+apiVersion: v1 # 사용할 Kubernetes API의 버전 지정
+kind: Service # 리소스의 종류: Service. pod 그룹에 대한 네트워크 서비스를 정의
 metadata:
-  name: app-one-svc
+  name: app-one-svc # Service의 이름
 spec:
-  selector: # 어떠한 pod와 통신 할 건지 label을 통해서 관리
-    app: app-one
-  ports:
-  - name: app-one-svc-port
-    protocol: TCP
-    port: 80  # 서비스 ip의 port를 열어 놓을 것인지에 대한 이야기
-    targetPort : app-one-port
+  selector: # Service가 연결할 pod를 선택하기 위한 조건 정의
+    app: app-one # pod의 라벨이 "app: app-one"인 것을 선택
+  ports: # Service가 오픈할 포트 정의
+    - name: app-one-svc-port
+      protocol: TCP # 포트의 프로토콜
+      port: 80 # Service가 오픈할 포트
+      targetPort: app-one-port # Service가 연결할 pod의 포트

@@ -6,7 +6,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - http:
+    - http: # host를 지정하지 않음 -> 모든 요청에 대해 적용
         paths:
           - path: /
             pathType: Prefix
